@@ -1,7 +1,9 @@
-from pydantic import BaseModel, EmailStr, Field
+"""Pydantic schemas for candidates and resumes."""
+from pydantic import BaseModel, EmailStr
 from typing import List, Optional
 from datetime import datetime
 
+# Resume schemas
 class ResumeBase(BaseModel):
     title: str
     file_url: str
@@ -17,6 +19,7 @@ class Resume(ResumeBase):
     class Config:
         orm_mode = True
 
+# Candidate schemas
 class CandidateBase(BaseModel):
     first_name: str
     last_name: str

@@ -1,6 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
-from my_candidate_resume_api.app.main import app
+from app.main import app
 
 client = TestClient(app)
 
@@ -11,4 +11,4 @@ def test_create_resume_for_nonexistent_candidate():
         "file_url": "http://example.com/resume.pdf"
     })
     assert response.status_code == 404
-    assert response.json()["detail"] == "Candidate does not exist."
+    assert response.json()["detail"] == "Candidate with ID 9999 not found."

@@ -7,3 +7,4 @@ pydantic
 alembic
 pytest
 httpx
+pydantic[email]
