@@ -1,0 +1,452 @@
+openapi: 3.0.3
+info:
+  title: Candidate & Resume Management API
+  description: A FastAPI backend for managing candidates and their resumes with a focus on robust data integrity, efficient API design, and production-grade error handling.
+  version: 1.0.0
+  
+servers:
+  - url: http://localhost:8000
+    description: Development server
+  
+tags:
+  - name: candidates
+    description: Operations related to candidate management
+  - name: resumes
+    description: Operations related to resume management
+
+paths:
+  /candidates/:
+    post:
+      tags:
+        - candidates
+      summary: Create a new candidate
+      description: Create a new candidate record in the system
+      operationId: createCandidate
+      requestBody:
+        description: Candidate information
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CandidateCreate'
+      responses:
+        '201':
+          description: Candidate created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Candidate'
+        '409':
+          description: Email already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailConflictError'
+    get:
+      tags:
+        - candidates
+      summary: List all candidates
+      description: Get a paginated list of all candidates
+      operationId: listCandidates
+      parameters:
+        - name: skip
+          in: query
+          description: Number of records to skip
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          description: Maximum number of records to return
+          required: false
+          schema:
+            type: integer
+            default: 100
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Candidate'
+
+  /candidates/{candidate_id}:
+    get:
+      tags:
+        - candidates
+      summary: Get a specific candidate
+      description: Get a specific candidate by ID
+      operationId: getCandidate
+      parameters:
+        - name: candidate_id
+          in: path
+          description: Candidate ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Candidate'
+        '404':
+          description: Candidate not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+    
+    put:
+      tags:
+        - candidates
+      summary: Update candidate details
+      description: Update an existing candidate's information
+      operationId: updateCandidate
+      parameters:
+        - name: candidate_id
+          in: path
+          description: Candidate ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Updated candidate information
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CandidateUpdate'
+      responses:
+        '200':
+          description: Candidate updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Candidate'
+        '404':
+          description: Candidate not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '409':
+          description: Email already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailConflictError'
+    
+    delete:
+      tags:
+        - candidates
+      summary: Delete candidate
+      description: Delete a candidate and all associated resumes (cascade delete)
+      operationId: deleteCandidate
+      parameters:
+        - name: candidate_id
+          in: path
+          description: Candidate ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Candidate deleted successfully
+        '404':
+          description: Candidate not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+
+  /resumes/:
+    post:
+      tags:
+        - resumes
+      summary: Create a new resume
+      description: Create a new resume associated with an existing candidate
+      operationId: createResume
+      requestBody:
+        description: Resume information
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResumeCreate'
+      responses:
+        '201':
+          description: Resume created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resume'
+        '404':
+          description: Candidate not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+    
+    get:
+      tags:
+        - resumes
+      summary: List all resumes
+      description: Get a paginated list of all resumes
+      operationId: listResumes
+      parameters:
+        - name: skip
+          in: query
+          description: Number of records to skip
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          description: Maximum number of records to return
+          required: false
+          schema:
+            type: integer
+            default: 100
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Resume'
+
+  /resumes/{resume_id}:
+    get:
+      tags:
+        - resumes
+      summary: Get a specific resume
+      description: Get a specific resume by ID
+      operationId: getResume
+      parameters:
+        - name: resume_id
+          in: path
+          description: Resume ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resume'
+        '404':
+          description: Resume not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+    
+    put:
+      tags:
+        - resumes
+      summary: Update resume metadata
+      description: Update an existing resume's information
+      operationId: updateResume
+      parameters:
+        - name: resume_id
+          in: path
+          description: Resume ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Updated resume information
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResumeUpdate'
+      responses:
+        '200':
+          description: Resume updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resume'
+        '404':
+          description: Resume not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+    
+    delete:
+      tags:
+        - resumes
+      summary: Delete resume
+      description: Delete a resume by ID
+      operationId: deleteResume
+      parameters:
+        - name: resume_id
+          in: path
+          description: Resume ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Resume deleted successfully
+        '404':
+          description: Resume not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+
+components:
+  schemas:
+    CandidateBase:
+      type: object
+      properties:
+        first_name:
+          type: string
+          example: John
+        last_name:
+          type: string
+          example: Doe
+        email:
+          type: string
+          format: email
+          example: john@example.com
+        phone:
+          type: string
+          example: "1234567890"
+      required:
+        - first_name
+        - last_name
+        - email
+    
+    CandidateCreate:
+      allOf:
+        - $ref: '#/components/schemas/CandidateBase'
+    
+    CandidateUpdate:
+      type: object
+      properties:
+        first_name:
+          type: string
+          example: John
+        last_name:
+          type: string
+          example: Doe
+        email:
+          type: string
+          format: email
+          example: john@example.com
+        phone:
+          type: string
+          example: "1234567890"
+    
+    Candidate:
+      allOf:
+        - $ref: '#/components/schemas/CandidateBase'
+        - type: object
+          properties:
+            candidate_id:
+              type: integer
+              format: int64
+              example: 1
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+            resumes:
+              type: array
+              items:
+                $ref: '#/components/schemas/Resume'
+              default: []
+    
+    ResumeBase:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Software Engineer Resume
+        file_url:
+          type: string
+          format: uri
+          example: http://example.com/resume.pdf
+      required:
+        - title
+        - file_url
+    
+    ResumeCreate:
+      allOf:
+        - $ref: '#/components/schemas/ResumeBase'
+        - type: object
+          properties:
+            candidate_id:
+              type: integer
+              format: int64
+              example: 1
+          required:
+            - candidate_id
+    
+    ResumeUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Updated Software Engineer Resume
+        file_url:
+          type: string
+          format: uri
+          example: http://example.com/updated-resume.pdf
+    
+    Resume:
+      allOf:
+        - $ref: '#/components/schemas/ResumeBase'
+        - type: object
+          properties:
+            resume_id:
+              type: integer
+              format: int64
+              example: 1
+            candidate_id:
+              type: integer
+              format: int64
+              example: 1
+            uploaded_at:
+              type: string
+              format: date-time
+    
+    NotFoundError:
+      type: object
+      properties:
+        detail:
+          type: string
+          example: Candidate with ID 1 not found.
+    
+    EmailConflictError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Email already registered.
+        email:
+          type: string
+          format: email
+          example: duplicate@example.com

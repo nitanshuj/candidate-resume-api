@@ -302,3 +302,32 @@ This project follows a layered architecture designed for maintainability, testab
 - **Modular Structure**: For maintainability and separation of concerns
 - **Repository Pattern**: For abstracting database operations
 - **Comprehensive Testing**: To ensure business rules are enforced
+
+## API Documentation
+
+### Swagger UI (Interactive Documentation)
+
+The API comes with built-in interactive documentation powered by Swagger UI:
+
+1. Start the application server:
+   ```bash
+   uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+   ```
+
+2. Access the Swagger UI:
+   - Open your browser and navigate to http://localhost:8000/docs
+   - You can explore all endpoints, execute requests, and view response models
+
+### Alternative Documentation
+
+- ReDoc (alternative documentation view): http://localhost:8000/redoc
+- OpenAPI Specification: http://localhost:8000/openapi.json
+
+### Swagger YAML File
+
+A `swagger.yaml` file is also provided in the project root, which can be imported into tools like Postman, SwaggerHub, or other API development tools.
+
+To generate an updated `swagger.yaml` file from a running server, use:
+```bash
+python -m scripts.swagger_utils --export
+```

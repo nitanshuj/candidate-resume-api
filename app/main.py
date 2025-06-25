@@ -14,8 +14,15 @@ from app.core.exceptions import (
 # Create FastAPI app
 app = FastAPI(
     title="Candidate & Resume Management API",
-    description="FastAPI backend for managing candidates and their resumes",
+    description="A FastAPI backend for managing candidates and their resumes with a focus on robust data integrity, efficient API design, and production-grade error handling.",
     version="1.0.0",
+    openapi_tags=[
+        {"name": "Candidates", "description": "Operations related to candidate management"},
+        {"name": "Resumes", "description": "Operations related to resume management"},
+        {"name": "Health", "description": "API health check endpoints"},
+        {"name": "Root", "description": "API information endpoint"},
+    ],
+    swagger_ui_parameters={"defaultModelsExpandDepth": -1}
 )
 
 # Add CORS middleware
