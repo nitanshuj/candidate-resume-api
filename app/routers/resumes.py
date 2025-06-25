@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from app import schemas
-from app.crud.resume import get_resume, get_resumes, create_resume, delete_resume
+from app.crud.resume import get_resume, get_resumes, create_resume, delete_resume, update_resume
 from app.core.database import get_db
 from app.core.exceptions import ResumeNotFoundError
 from app.core.logger import logger
@@ -38,3 +38,9 @@ def delete_resume_endpoint(resume_id: int, db: Session = Depends(get_db)):
     logger.info(f"Deleting resume with ID: {resume_id}")
     delete_resume(db, resume_id)
     return
+
+@router.put("/{resume_id}", response_model=schemas.Resume)
+def update_resume_endpoint(resume_id: int, resume: schemas.ResumeUpdate, db: Session = Depends(get_db)):
+    """Update resume metadata."""
+    logger.info(f"Updating resume ID: {resume_id}")
+    return update_resume(db, resume_id, resume)

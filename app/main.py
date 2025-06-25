@@ -38,6 +38,14 @@ async def http_exception_handler(request: Request, exc: HTTPException):
     logger.warning(f"HTTP exception: {exc.status_code} - {exc.detail}")
     return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
 
+@app.exception_handler(EmailAlreadyExistsError)
+async def email_exists_exception_handler(request: Request, exc: EmailAlreadyExistsError):
+    logger.warning(f"Duplicate email attempt: {exc.detail.get('email')}")
+    return JSONResponse(
+        status_code=exc.status_code,
+        content=exc.detail,
+    )
+
 # Include routers
 app.include_router(candidates.router, prefix="/candidates", tags=["Candidates"])
 app.include_router(resumes.router, prefix="/resumes", tags=["Resumes"])
@@ -47,3 +55,18 @@ app.include_router(resumes.router, prefix="/resumes", tags=["Resumes"])
 def health_check():
     """Health check endpoint."""
     return {"status": "ok"}
+
+@app.get("/", tags=["Root"])
+def root():
+    """
+    Root endpoint that provides basic API information.
+    """
+    return {
+        "message": "Welcome to Candidate Resume API",
+        "version": "1.0.0",
+        "documentation": "/docs",
+        "endpoints": {
+            "candidates": "/candidates",
+            "resumes": "/resumes"
+        }
+    }

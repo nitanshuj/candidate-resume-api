@@ -12,7 +12,7 @@ load_dotenv()
 # Create database engine and session
 DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
-    DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/candidate_recruitment"
+    DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/Candidate_Recruitment"
     logger.warning("DATABASE_URL not found in environment variables. Using default.")
 
 try:

@@ -2,7 +2,7 @@
 from sqlalchemy.orm import Session
 
 from app.models.resume import Resume
-from app.schemas import ResumeCreate
+from app.schemas import ResumeCreate, ResumeUpdate
 from app.core.exceptions import ResumeNotFoundError, CandidateNotFoundError
 from app.crud.candidate import get_candidate
 from app.core.logger import logger
@@ -31,6 +31,23 @@ def create_resume(db: Session, resume: ResumeCreate):
     db.commit()
     db.refresh(db_resume)
     logger.info(f"Created resume with ID {db_resume.resume_id} for candidate {resume.candidate_id}")
+    return db_resume
+
+def update_resume(db: Session, resume_id: int, resume: ResumeUpdate):
+    """Update an existing resume."""
+    db_resume = get_resume(db, resume_id)
+    if not db_resume:
+        raise ResumeNotFoundError(resume_id)
+    
+    update_data = resume.model_dump(exclude_unset=True)
+    
+    for key, value in update_data.items():
+        setattr(db_resume, key, value)
+    
+    db.add(db_resume)
+    db.commit()
+    db.refresh(db_resume)
+    logger.info(f"Updated resume with ID {db_resume.resume_id}")
     return db_resume
 
 def delete_resume(db: Session, resume_id: int):

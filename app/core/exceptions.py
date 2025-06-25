@@ -1,10 +1,14 @@
 from fastapi import HTTPException, status
 
 class EmailAlreadyExistsError(HTTPException):
-    def __init__(self):
+    def __init__(self, email: str):
         super().__init__(
             status_code=status.HTTP_409_CONFLICT,
-            detail="Email already registered."
+            detail={
+                "message": "Email already registered.",
+                "email": email,
+                "suggestion": "Please use a different email address or try logging in."
+            }
         )
 
 class CandidateNotFoundError(HTTPException):
