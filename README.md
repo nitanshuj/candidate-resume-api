@@ -10,42 +10,9 @@ A FastAPI backend for managing candidates and their resumes with a focus on robu
 - Comprehensive error handling with meaningful error responses
 - Modular, production-ready codebase with clear separation of concerns
 - Pagination support for listing endpoints
-- Docker support for easy deployment
 - Unit tests for business logic and constraints
 
 ## Setup and Installation
-
-### Option 1: Using Docker (Recommended)
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/candidate-resume-api.git
-   cd candidate-resume-api
-   ```
-
-2. **Run with Docker Compose**
-   ```bash
-   docker-compose up -d
-   ```
-   This will:
-   - Create and start a PostgreSQL database (`candidate_resume_db`)
-   - Build and run the FastAPI application
-   - Create database tables automatically
-   - Expose the API on http://localhost:8000
-
-3. **Access the API documentation**
-   - Open your browser and navigate to http://localhost:8000/docs
-
-4. **Viewing logs**
-   ```bash
-   # View API logs
-   docker logs -f candidate-resume-api
-   
-   # View database logs
-   docker logs -f candidate-resume-db
-   ```
-
-### Option 2: Manual Setup
 
 1. **Clone the repository**
    ```bash
@@ -305,8 +272,6 @@ candidate-resume-api/
 │   └── test_resumes.py     # Tests for resume operations
 ├── .env                    # Environment variables
 ├── .gitignore              # Git ignore file
-├── docker-compose.yml      # Docker Compose configuration
-├── Dockerfile              # Docker configuration
 ├── README.md               # This file
 └── requirements.txt        # Python dependencies
 ```
@@ -336,5 +301,4 @@ This project follows a layered architecture designed for maintainability, testab
 - **Custom Exceptions**: For clear and consistent error handling
 - **Modular Structure**: For maintainability and separation of concerns
 - **Repository Pattern**: For abstracting database operations
-- **Docker Support**: For consistent deployment across environments
 - **Comprehensive Testing**: To ensure business rules are enforced
